@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdupt.mapper.UserMapper">
+
+    <resultMap type="com.gdupt.entity.User" id="UsersMap">
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="userName" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="INTEGER"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="isLocked" column="is_locked" jdbcType="INTEGER"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+        <result property="passwordChangeTime" column="password_change_time" jdbcType="TIMESTAMP"/>
+        <result property="province" column="province" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="country" column="country" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="loginFailCount" column="login_fail_count" jdbcType="INTEGER"/>
+        <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+    <update id="updateLoginFailNum">
+        update emis_users set login_fail_count=login_fail_count+1 where user_id = #{userId}
+    </update>
+
+
+    <select id="getUsersByUserName" resultMap="UsersMap">
+        select * from emis_users where username = #{username}
+    </select>
+
+
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UsersMap">
+        select
+            user_id, user_name, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, create_time, update_time, login_fail_count, last_login_time
+        from emis_users
+        where user_id = #{userId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UsersMap">
+        select
+        user_id, user_name, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, create_time, update_time, login_fail_count, last_login_time
+        from emis_users
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="isLocked != null">
+                and is_locked = #{isLocked}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="telephone != null and telephone != ''">
+                and telephone = #{telephone}
+            </if>
+            <if test="passwordChangeTime != null">
+                and password_change_time = #{passwordChangeTime}
+            </if>
+            <if test="province != null and province != ''">
+                and province = #{province}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="country != null and country != ''">
+                and country = #{country}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="loginFailCount != null">
+                and login_fail_count = #{loginFailCount}
+            </if>
+            <if test="lastLoginTime != null">
+                and last_login_time = #{lastLoginTime}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from emis_users
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="isLocked != null">
+                and is_locked = #{isLocked}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="telephone != null and telephone != ''">
+                and telephone = #{telephone}
+            </if>
+            <if test="passwordChangeTime != null">
+                and password_change_time = #{passwordChangeTime}
+            </if>
+            <if test="province != null and province != ''">
+                and province = #{province}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="country != null and country != ''">
+                and country = #{country}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="loginFailCount != null">
+                and login_fail_count = #{loginFailCount}
+            </if>
+            <if test="lastLoginTime != null">
+                and last_login_time = #{lastLoginTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into emis_users(user_name, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, create_time, update_time, login_fail_count, last_login_time)
+        values (#{userName}, #{password}, #{gender}, #{deptId}, #{isDelete}, #{isLocked}, #{email}, #{telephone}, #{passwordChangeTime}, #{province}, #{city}, #{country}, #{address}, #{createTime}, #{updateTime}, #{loginFailCount}, #{lastLoginTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into emis_users(user_name, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, create_time, update_time, login_fail_count, last_login_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userName}, #{entity.password}, #{entity.gender}, #{entity.deptId}, #{entity.isDelete}, #{entity.isLocked}, #{entity.email}, #{entity.telephone}, #{entity.passwordChangeTime}, #{entity.province}, #{entity.city}, #{entity.country}, #{entity.address}, #{entity.createTime}, #{entity.updateTime}, #{entity.loginFailCount}, #{entity.lastLoginTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into emis_users(user_name, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, create_time, update_time, login_fail_count, last_login_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userName}, #{entity.password}, #{entity.gender}, #{entity.deptId}, #{entity.isDelete}, #{entity.isLocked}, #{entity.email}, #{entity.telephone}, #{entity.passwordChangeTime}, #{entity.province}, #{entity.city}, #{entity.country}, #{entity.address}, #{entity.createTime}, #{entity.updateTime}, #{entity.loginFailCount}, #{entity.lastLoginTime})
+        </foreach>
+        on duplicate key update
+        user_name = values(user_name),
+        password = values(password),
+        gender = values(gender),
+        dept_id = values(dept_id),
+        is_delete = values(is_delete),
+        is_locked = values(is_locked),
+        email = values(email),
+        telephone = values(telephone),
+        password_change_time = values(password_change_time),
+        province = values(province),
+        city = values(city),
+        country = values(country),
+        address = values(address),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        login_fail_count = values(login_fail_count),
+        last_login_time = values(last_login_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update emis_users
+        <set>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="isLocked != null">
+                is_locked = #{isLocked},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="telephone != null and telephone != ''">
+                telephone = #{telephone},
+            </if>
+            <if test="passwordChangeTime != null">
+                password_change_time = #{passwordChangeTime},
+            </if>
+            <if test="province != null and province != ''">
+                province = #{province},
+            </if>
+            <if test="city != null and city != ''">
+                city = #{city},
+            </if>
+            <if test="country != null and country != ''">
+                country = #{country},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="loginFailCount != null">
+                login_fail_count = #{loginFailCount},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from emis_users where user_id = #{userId}
+    </delete>
+</mapper>

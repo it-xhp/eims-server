@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gdupt.mapper.DeptMapper">
+
+    <resultMap type="com.gdupt.entity.Dept" id="DeptMap">
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="leader" column="leader" jdbcType="INTEGER"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="delete" column="delete" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="DeptMap">
+        select
+          dept_id, dept_name, leader, phone, email, status, create_by, create_time, update_by, update_time, `delete`
+        from eims_dept
+        where dept_id = #{deptId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="DeptMap">
+        select
+          dept_id, dept_name, leader, phone, email, status, create_by, create_time, update_by, update_time, delete
+        from eims_dept
+        <where>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="leader != null">
+                and leader = #{leader}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="delete != null">
+                and delete = #{delete}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from eims_dept
+        <where>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="leader != null">
+                and leader = #{leader}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="delete != null">
+                and delete = #{delete}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="deptId" useGeneratedKeys="true">
+        insert into eims_dept(dept_name, leader, phone, email, status, create_by, create_time, update_by, update_time, delete)
+        values (#{deptName}, #{leader}, #{phone}, #{email}, #{status}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{delete})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="deptId" useGeneratedKeys="true">
+        insert into eims_dept(dept_name, leader, phone, email, status, create_by, create_time, update_by, update_time, delete)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.deptName}, #{entity.leader}, #{entity.phone}, #{entity.email}, #{entity.status}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.delete})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="deptId" useGeneratedKeys="true">
+        insert into eims_dept(dept_name, leader, phone, email, status, create_by, create_time, update_by, update_time, delete)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.deptName}, #{entity.leader}, #{entity.phone}, #{entity.email}, #{entity.status}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.delete})
+        </foreach>
+        on duplicate key update
+        dept_name = values(dept_name),
+        leader = values(leader),
+        phone = values(phone),
+        email = values(email),
+        status = values(status),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        delete = values(delete)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update eims_dept
+        <set>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="leader != null">
+                leader = #{leader},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="delete != null">
+                delete = #{delete},
+            </if>
+        </set>
+        where dept_id = #{deptId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from eims_dept where dept_id = #{deptId}
+    </delete>
+
+</mapper>
+
