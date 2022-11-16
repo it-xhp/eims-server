@@ -1,6 +1,8 @@
 package com.gdupt.config;
 
+import com.gdupt.shiro.JWTDefaultSubjectFactory;
 import com.gdupt.shiro.UserRealm;
+import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,6 +18,16 @@ import java.util.LinkedHashMap;
  */
 @Configuration
 public class ShiroConfig {
+
+
+    /**
+     * 告诉shiro不创建内置的session
+     * @return
+     */
+    @Bean
+    public SubjectFactory subjectFactory(){
+        return new JWTDefaultSubjectFactory();
+    }
 
     /**
      * 创建自定义UserRealm
