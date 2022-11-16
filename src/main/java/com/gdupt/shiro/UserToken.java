@@ -8,7 +8,7 @@ import org.apache.shiro.authc.AuthenticationToken;
  * @date 2022/11/16
  */
 public class UserToken  implements AuthenticationToken {
-    private String jwt;
+    private String JWT;
     private User user;
 
 
@@ -23,25 +23,17 @@ public class UserToken  implements AuthenticationToken {
         return this.user;
     }
 
-    public UserToken(String jwt, User user) {
-        this.jwt = jwt;
+    public UserToken(String JWT, User user) {
+        this.JWT = JWT;
         this.user = user;
     }
 
-    public UserToken(String jwt) {
-        this.jwt = jwt;
+    public String getJWT() {
+        return JWT;
     }
 
-    public UserToken(User user) {
-        this.user = user;
-    }
-
-    public String getJwt() {
-        return jwt;
-    }
-
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
+    public void setJWT(String JWT) {
+        this.JWT = JWT;
     }
 
     public User getUser() {

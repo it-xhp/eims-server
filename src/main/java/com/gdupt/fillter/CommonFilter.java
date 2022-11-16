@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2022/11/16
  */
 @Component
+@SuppressWarnings("Duplicates")
 public class CommonFilter extends AnonymousFilter {
     @Override
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
