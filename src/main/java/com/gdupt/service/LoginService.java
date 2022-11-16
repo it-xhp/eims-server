@@ -1,19 +1,15 @@
 package com.gdupt.service;
 
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.gdupt.constant.RedisConstant;
 import com.gdupt.entity.User;
 import com.gdupt.enums.ErrorCodeEnum;
-import com.gdupt.util.ApiResultUtils;
-import com.gdupt.util.ApiResults;
-import com.gdupt.util.MemoryData;
-import com.gdupt.util.RedisUtil;
+import com.gdupt.shiro.UserToken;
+import com.gdupt.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,26 +32,31 @@ public class LoginService {
     private RightService rightService;
 
 
-
     /**
      * 登录
-     * @param username
-     * @param password
+     * @param data
+     * @param session
      * @return
      */
-    public ApiResults login(String username, String password, Integer isRemember,HttpSession session) {
-        JSONObject data = new JSONObject();
+    public ApiResults login(JSONObject data,HttpSession session) {
+        User user = data.toBean(User.class);
+        Integer isRemember = data.getInt("isRemember");
         String authenticationToken = "";
-        if (StrUtil.isBlank(username)){
+        if (StrUtil.isBlank(user.getUserName())){
             return ApiResultUtils.getFail(ErrorCodeEnum.INVALID_PARAM,"用户名不能为空");
-        }else if (StrUtil.isBlank(password)){
+        }else if (StrUtil.isBlank(user.getPassword())){
             return ApiResultUtils.getFail(ErrorCodeEnum.INVALID_PARAM,"密码不能为空");
         }
+        User loginUser;
         try {
             Subject subject = SecurityUtils.getSubject();
-            UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-            subject.login(token);
-            User loginUser = (User) subject.getPrincipal();
+            UserToken token = new UserToken(null,user);
+            try {
+                subject.login(token);
+            }catch (Exception e){
+                return ApiResultUtils.getFail(ErrorCodeEnum.LOGIN_FAIL,e.getLocalizedMessage());
+            }
+            loginUser = (User) subject.getPrincipal();
             String userId = loginUser.getUserId().toString();
             String sessionId = session.getId();
             if (!MemoryData.getSessionIdMap().containsKey(userId)){
@@ -65,14 +66,14 @@ public class LoginService {
                 MemoryData.getSessionIdMap().put(userId, sessionId);
             }
             if (isRemember.equals(1)){
-                authenticationToken = IdUtil.simpleUUID();
-                redisUtil.set(RedisConstant.USER_PREFIX + userId,authenticationToken,30*24*60*60);
+                authenticationToken = JwtUtil.createJWT(userId);
+                redisUtil.setObject(RedisConstant.USER_PREFIX + userId,loginUser);
             }
         }catch (AuthenticationException e){
             return ApiResultUtils.getFail(ErrorCodeEnum.LOGIN_FAIL,e.toString());
         }
-        data.set("username",username);
-        data.set("Authorized-Token",authenticationToken);
+        data.set("username",loginUser.getUserName());
+        data.set("token",authenticationToken);
         return ApiResultUtils.getSuccess("登录成功",data);
     }
 

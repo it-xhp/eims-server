@@ -1,5 +1,6 @@
 package com.gdupt.util;
 
+import cn.hutool.core.util.StrUtil;
 import com.gdupt.enums.ErrorCodeEnum;
 
 
@@ -27,7 +28,7 @@ public class ApiResultUtils {
     public static ApiResults getFail(ErrorCodeEnum errorCodeEnum, String message) {
         return ApiResults.builder()
                 .success(false)
-                .message(message==null?"":message)
+                .message(StrUtil.isBlank(message) ?errorCodeEnum.getDescription():message)
                 .errorCode(errorCodeEnum.getErrorCode())
                 .build();
 

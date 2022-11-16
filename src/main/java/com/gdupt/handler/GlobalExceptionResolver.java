@@ -21,7 +21,7 @@ public class GlobalExceptionResolver {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ApiResults processException(Exception ex){
-        log.error("捕获全局异常：",ex);
+        log.error("捕获全局异常：",ex.getLocalizedMessage());
         return ApiResultUtils.getFail(ErrorCodeEnum.SYSTEM_ERROR,"未知异常，请联系管理员");
     }
 }
