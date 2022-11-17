@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.gdupt.mapper.UserMapper">
 
-    <resultMap type="com.gdupt.entity.User" id="UsersMap">
+    <resultMap type="com.gdupt.entity.User" id="UserMap">
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
         <result property="userName" column="username" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
@@ -18,43 +17,33 @@
         <result property="city" column="city" jdbcType="VARCHAR"/>
         <result property="country" column="country" jdbcType="VARCHAR"/>
         <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="creator" column="creator" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUser" column="update_user" jdbcType="INTEGER"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="loginFailCount" column="login_fail_count" jdbcType="INTEGER"/>
         <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-
-    <update id="updateLoginFailNum">
-        update emis_users set login_fail_count=login_fail_count+1 where user_id = #{userId}
-    </update>
-
-
-    <select id="getUsersByUserName" resultMap="UsersMap">
-        select * from emis_users where username = #{username}
-    </select>
-
-
-
     <!--查询单个-->
-    <select id="queryById" resultMap="UsersMap">
+    <select id="queryById" resultMap="UserMap">
         select
-            user_id, user_name, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, create_time, update_time, login_fail_count, last_login_time
+          user_id, username, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, creator, create_time, update_user, update_time, login_fail_count, last_login_time
         from emis_users
         where user_id = #{userId}
     </select>
 
     <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="UsersMap">
+    <select id="queryAllByLimit" resultMap="UserMap">
         select
-        user_id, user_name, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, create_time, update_time, login_fail_count, last_login_time
+          user_id, username, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, creator, create_time, update_user, update_time, login_fail_count, last_login_time
         from emis_users
         <where>
             <if test="userId != null">
                 and user_id = #{userId}
             </if>
-            <if test="userName != null and userName != ''">
-                and user_name = #{userName}
+            <if test="username != null and username != ''">
+                and username = #{username}
             </if>
             <if test="password != null and password != ''">
                 and password = #{password}
@@ -92,8 +81,14 @@
             <if test="address != null and address != ''">
                 and address = #{address}
             </if>
+            <if test="creator != null">
+                and creator = #{creator}
+            </if>
             <if test="createTime != null">
                 and create_time = #{createTime}
+            </if>
+            <if test="updateUser != null">
+                and update_user = #{updateUser}
             </if>
             <if test="updateTime != null">
                 and update_time = #{updateTime}
@@ -116,8 +111,8 @@
             <if test="userId != null">
                 and user_id = #{userId}
             </if>
-            <if test="userName != null and userName != ''">
-                and user_name = #{userName}
+            <if test="username != null and username != ''">
+                and username = #{username}
             </if>
             <if test="password != null and password != ''">
                 and password = #{password}
@@ -155,8 +150,14 @@
             <if test="address != null and address != ''">
                 and address = #{address}
             </if>
+            <if test="creator != null">
+                and creator = #{creator}
+            </if>
             <if test="createTime != null">
                 and create_time = #{createTime}
+            </if>
+            <if test="updateUser != null">
+                and update_user = #{updateUser}
             </if>
             <if test="updateTime != null">
                 and update_time = #{updateTime}
@@ -172,26 +173,26 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
-        insert into emis_users(user_name, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, create_time, update_time, login_fail_count, last_login_time)
-        values (#{userName}, #{password}, #{gender}, #{deptId}, #{isDelete}, #{isLocked}, #{email}, #{telephone}, #{passwordChangeTime}, #{province}, #{city}, #{country}, #{address}, #{createTime}, #{updateTime}, #{loginFailCount}, #{lastLoginTime})
+        insert into emis_users(username, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, creator, create_time, update_user, update_time, login_fail_count, last_login_time)
+        values (#{username}, #{password}, #{gender}, #{deptId}, #{isDelete}, #{isLocked}, #{email}, #{telephone}, #{passwordChangeTime}, #{province}, #{city}, #{country}, #{address}, #{creator}, #{createTime}, #{updateUser}, #{updateTime}, #{loginFailCount}, #{lastLoginTime})
     </insert>
 
     <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
-        insert into emis_users(user_name, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, create_time, update_time, login_fail_count, last_login_time)
+        insert into emis_users(username, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, creator, create_time, update_user, update_time, login_fail_count, last_login_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.userName}, #{entity.password}, #{entity.gender}, #{entity.deptId}, #{entity.isDelete}, #{entity.isLocked}, #{entity.email}, #{entity.telephone}, #{entity.passwordChangeTime}, #{entity.province}, #{entity.city}, #{entity.country}, #{entity.address}, #{entity.createTime}, #{entity.updateTime}, #{entity.loginFailCount}, #{entity.lastLoginTime})
+        (#{entity.username}, #{entity.password}, #{entity.gender}, #{entity.deptId}, #{entity.isDelete}, #{entity.isLocked}, #{entity.email}, #{entity.telephone}, #{entity.passwordChangeTime}, #{entity.province}, #{entity.city}, #{entity.country}, #{entity.address}, #{entity.creator}, #{entity.createTime}, #{entity.updateUser}, #{entity.updateTime}, #{entity.loginFailCount}, #{entity.lastLoginTime})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
-        insert into emis_users(user_name, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, create_time, update_time, login_fail_count, last_login_time)
+        insert into emis_users(username, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, creator, create_time, update_user, update_time, login_fail_count, last_login_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.userName}, #{entity.password}, #{entity.gender}, #{entity.deptId}, #{entity.isDelete}, #{entity.isLocked}, #{entity.email}, #{entity.telephone}, #{entity.passwordChangeTime}, #{entity.province}, #{entity.city}, #{entity.country}, #{entity.address}, #{entity.createTime}, #{entity.updateTime}, #{entity.loginFailCount}, #{entity.lastLoginTime})
+            (#{entity.username}, #{entity.password}, #{entity.gender}, #{entity.deptId}, #{entity.isDelete}, #{entity.isLocked}, #{entity.email}, #{entity.telephone}, #{entity.passwordChangeTime}, #{entity.province}, #{entity.city}, #{entity.country}, #{entity.address}, #{entity.creator}, #{entity.createTime}, #{entity.updateUser}, #{entity.updateTime}, #{entity.loginFailCount}, #{entity.lastLoginTime})
         </foreach>
         on duplicate key update
-        user_name = values(user_name),
+        username = values(username),
         password = values(password),
         gender = values(gender),
         dept_id = values(dept_id),
@@ -204,7 +205,9 @@
         city = values(city),
         country = values(country),
         address = values(address),
+        creator = values(creator),
         create_time = values(create_time),
+        update_user = values(update_user),
         update_time = values(update_time),
         login_fail_count = values(login_fail_count),
         last_login_time = values(last_login_time)
@@ -214,8 +217,8 @@
     <update id="update">
         update emis_users
         <set>
-            <if test="userName != null and userName != ''">
-                user_name = #{userName},
+            <if test="username != null and username != ''">
+                username = #{username},
             </if>
             <if test="password != null and password != ''">
                 password = #{password},
@@ -253,8 +256,14 @@
             <if test="address != null and address != ''">
                 address = #{address},
             </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
             <if test="createTime != null">
                 create_time = #{createTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
             </if>
             <if test="updateTime != null">
                 update_time = #{updateTime},
@@ -270,7 +279,23 @@
     </update>
 
     <!--通过主键删除-->
-    <delete id="deleteById">
-        delete from emis_users where user_id = #{userId}
-    </delete>
+    <update id="deleteById">
+        update emis_users
+        set is_delete = 1,
+            update_user = #{updateUser},
+            update_time = #{updateTime}
+        and userId = #{userId}
+    </update>
+
+    <!--通过用户名查询用户-->
+    <select id="getUsersByUserName" resultMap="UserMap">
+        select
+            user_id, username, password, gender, dept_id, is_delete, is_locked, email, telephone, password_change_time, province, city, country, address, creator, create_time, update_user, update_time, login_fail_count, last_login_time
+        from emis_users
+        where username = #{username}
+        limit 1
+    </select>
+
+
 </mapper>
+

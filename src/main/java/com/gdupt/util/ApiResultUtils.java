@@ -41,6 +41,15 @@ public class ApiResultUtils {
                 .build();
     }
 
+    public static<T> ApiResults getSuccess(T data) {
+        return ApiResults.builder()
+                .success(true)
+                .message("")
+                .errorCode(0)
+                .data(data)
+                .build();
+    }
+
     public static ApiResults getSuccess(String message) {
         return ApiResults.builder()
                 .success(false)
@@ -49,7 +58,7 @@ public class ApiResultUtils {
                 .build();
     }
 
-    public static ApiResults getSuccess(String message, Object data) {
+    public static<T> ApiResults getSuccess(String message, T data) {
         return ApiResults.builder()
                 .success(true)
                 .message(message)

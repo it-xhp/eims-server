@@ -28,7 +28,9 @@ public class User {
     private String city;
     private String country;
     private String address;
+    private Integer creator;
     private Date createTime;
+    private Integer updateUser;
     private Date updateTime;
     private Integer loginFailCount;
     private Date lastLoginTime;

@@ -56,7 +56,7 @@ public class UserRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
         UserToken token = (UserToken) authenticationToken;
         User user = token.getUser();
-        String jwt = token.getJwt();
+        String jwt = token.getJWT();
         User authenticationUser;
         if (StrUtil.isNotBlank(jwt)){
             Claims claims;

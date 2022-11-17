@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ApiResults {
+public class ApiResults<T> {
     private String message;
     private boolean success;
     private Integer errorCode;
-    private Object data;
+    private T data;
 }
