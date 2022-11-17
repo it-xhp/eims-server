@@ -7,7 +7,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -52,7 +51,7 @@ public class ExcelUtils {
      * @param workbook
      * @param excelName 导出的excel文件名
      **/
-    public static void generateOutputStream(HttpServletResponse response, @NotNull HSSFWorkbook workbook, String excelName){
+    public static void generateOutputStream(HttpServletResponse response,  HSSFWorkbook workbook, String excelName){
         try (OutputStream os = response.getOutputStream()) {
             response.setContentType("application/vnd.ms-excel;");
             response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
