@@ -3,7 +3,7 @@
 
 <mapper namespace="com.gdupt.mapper.FilesMapper">
 
-    <resultMap type="com.gdupt.entity.Files" id="EmisFilesMap">
+    <resultMap type="com.gdupt.entity.Files" id="FilesMapper">
         <result property="fileId" column="file_id" jdbcType="INTEGER"/>
         <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
         <result property="fileSuffix" column="file_suffix" jdbcType="VARCHAR"/>
@@ -16,15 +16,53 @@
 
 
     <!--查询单个-->
-    <select id="queryById" resultMap="EmisFilesMap">
+    <select id="queryById" resultMap="FilesMapper">
         select
             file_id, file_name, file_suffix, path, relation_type_id, upload_time, upload_user_id, relation_id
         from emis_files
         where file_id = #{fileId}
     </select>
 
+
+    <!--多个id查询多个-->
+    <select id="queryByIds" resultMap="FilesMapper">
+        select
+            file_id, file_name, file_suffix, path, relation_type_id, upload_time, upload_user_id, relation_id
+        from emis_files
+        where file_id 
+        in 
+        <foreach collection="fileIds" item="id" separator="," open="(" close=")" index="">
+            #{id, jdbcType=INTEGER}
+        </foreach>
+    </select>
+
+
+    <!--多个id查询多个-->
+    <select id="queryBatchById" resultMap="FilesMapper">
+        select
+        file_id, file_name, file_suffix, path, relation_type_id, upload_time, upload_user_id, relation_id
+        from emis_files
+        where file_id = #{fileId}
+    </select>
+
+
+
+    <select id="findOneByRelationTypeIdOrRelationTypeId" resultMap="FilesMapper">
+        select
+            file_id, file_name, file_suffix, path, relation_type_id, upload_time, upload_user_id, relation_id
+        from emis_files
+        <where>
+            <if test="relationId != null">
+                and relation_id = #{relationId}
+            </if>
+            <if test="relationTypeId">
+                and relation_type_id = #{relationTypeId}
+            </if>
+        </where>
+    </select>
+
     <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="EmisFilesMap">
+    <select id="queryAllByLimit" resultMap="FilesMapper">
         select
         file_id, file_name, file_suffix, path, relation_type_id, upload_time, upload_user_id, relation_id
         from emis_files

@@ -2,8 +2,11 @@ package com.gdupt.service;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONObject;
+import com.gdupt.entity.Files;
+import com.gdupt.mapper.FilesMapper;
 import com.gdupt.util.ApiResultUtils;
 import com.gdupt.util.ApiResults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author xuhuaping
@@ -22,6 +26,9 @@ import java.util.Iterator;
  */
 @Service
 public class FilesService {
+
+    @Autowired
+    private FilesMapper filesMapper;
 
     @Value("${server.root-path}")
     private String rootPath;
@@ -70,4 +77,59 @@ public class FilesService {
         }
         return ApiResultUtils.getSuccess("",data);
     }
+
+
+    /**
+     * 新增文件
+     * @param files
+     */
+    public boolean saveFiles(Files files){
+        int isSave = filesMapper.insert(files);
+        return isSave>0;
+    }
+
+    /**
+     * 删除文件
+     * @param fileId
+     * @return
+     */
+    public boolean delFiles(Integer fileId){
+        int isDel = filesMapper.deleteById(fileId);
+        return isDel > 0;
+    }
+
+    /**
+     * 查询单个文件
+     * @param fileId
+     * @return
+     */
+    public Files findOneById(Integer fileId){
+        return filesMapper.queryById(fileId);
+    }
+
+    /**
+     * 通过批量id查询批量文件
+     * @param fileIds
+     * @return
+     */
+    public List<Files> findBatchByIds(List<Integer> fileIds){
+        return filesMapper.queryByIds(fileIds);
+    }
+
+
+    /**
+     * 通过批量id查询批量文件
+     * @param fileId
+     * @return
+     */
+    public List<Files> findBatchById(Integer fileId){
+        return filesMapper.queryBatchById(fileId);
+    }
+
+
+    public List<Files> findOneByRelationTypeIdOrRelationTypeId(Integer relationTypeId, Integer relationId){
+        return filesMapper.findOneByRelationTypeIdOrRelationTypeId(relationTypeId,relationId);
+    }
+
+
 }

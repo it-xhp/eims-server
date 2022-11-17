@@ -23,6 +23,29 @@ public interface FilesMapper {
     Files queryById(Integer fileId);
 
     /**
+     * 通过批量ID查询多条数据
+     * @param fileIds
+     * @return
+     */
+    List<Files> queryByIds(@Param("fileIds")List<Integer> fileIds);
+
+
+    /**
+     * 通过ID查询多条数据
+     * @param fileId
+     * @return
+     */
+    List<Files> queryBatchById(@Param("fileId")Integer fileId);
+
+    /**
+     * 1
+     * @param relationTypeId
+     * @param relationId
+     * @return
+     */
+    List<Files> findOneByRelationTypeIdOrRelationTypeId(@Param("relationTypeId")Integer relationTypeId,@Param("relationId")Integer relationId);
+
+    /**
      * 查询指定行数据
      *
      * @param Files 查询条件
