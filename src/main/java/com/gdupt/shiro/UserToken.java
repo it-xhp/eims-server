@@ -20,7 +20,7 @@ public class UserToken  implements AuthenticationToken {
 
     @Override
     public Object getCredentials() {
-        return this.user;
+        return this.user.getPassword();
     }
 
     public UserToken(String JWT, User user) {

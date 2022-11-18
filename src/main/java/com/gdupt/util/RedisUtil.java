@@ -2,11 +2,12 @@ package com.gdupt.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
-
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -180,4 +181,25 @@ public class RedisUtil {
         return redisTemplate.opsForList().rightPush(key, value);
     }
 
+
+    /**
+     * 设置对象
+     * @param key
+     * @param value
+     * @param <T>
+     */
+    public <T> void setObject(String key, T value){
+        redisTemplate.opsForValue().set(key,value);
+    }
+
+    /**
+     * 获得缓存的基本对象。
+     *
+     * @param key 缓存键值
+     * @return 缓存键值对应的数据
+     */
+    public <T> T getObject(String key) {
+        ValueOperations<String, T> operation = redisTemplate.opsForValue();
+        return operation.get(key);
+    }
 }

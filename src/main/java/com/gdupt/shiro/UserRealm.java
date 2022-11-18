@@ -2,8 +2,6 @@ package com.gdupt.shiro;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.gdupt.constant.RedisConstant;
 import com.gdupt.entity.User;
 import com.gdupt.service.UserService;
@@ -75,12 +73,12 @@ public class UserRealm extends AuthorizingRealm {
             authenticationUser = userService.getUserByUsername(user.getUserName());
             if (Objects.isNull(authenticationUser)){
                 throw new UnknownAccountException("该账号不存在");
-            }else if (user.getIsLocked().equals(1)){
+            }else if (authenticationUser.getIsLocked().equals(1)){
                 throw new LockedAccountException("该账号被锁定，请联系管理员");
-            }else if (!user.getPassword().equals(authenticationUser.getPassword())){
+            }else if (!authenticationUser.getPassword().equals(authenticationUser.getPassword())){
                 throw new  AuthenticationException("用户名或者密码错误");
             }
         }
-        return new SimpleAuthenticationInfo(authenticationUser,user.getPassword(),getName());
+        return new SimpleAuthenticationInfo(authenticationUser,authenticationUser.getPassword(),getName());
     }
 }

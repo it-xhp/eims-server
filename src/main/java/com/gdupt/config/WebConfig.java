@@ -64,6 +64,6 @@ public class WebConfig implements WebMvcConfigurer {
                 // 是否支持跨域用户凭证
                 .allowCredentials(true)
                 // 所有的外部域都可跨域访问。 如果是localhost则很难配置，因为在跨域请求的时候，外部域的解析可能是localhost、127.0.0.1、主机名
-                .allowedOrigins("*");
+                .allowedOriginPatterns("*");
     }
 }

@@ -51,7 +51,7 @@ public class ExcelUtils {
      * @param workbook
      * @param excelName 导出的excel文件名
      **/
-    public static void generateOutputStream(HttpServletResponse response,  HSSFWorkbook workbook, String excelName){
+    public static void generateOutputStream(HttpServletResponse response, HSSFWorkbook workbook, String excelName){
         try (OutputStream os = response.getOutputStream()) {
             response.setContentType("application/vnd.ms-excel;");
             response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
