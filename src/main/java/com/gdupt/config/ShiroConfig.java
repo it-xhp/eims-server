@@ -82,7 +82,7 @@ public class ShiroConfig {
          */
 
         // 注意：这里配置的 /login 是指到 @RequestMapping(value="/login")中的 /login
-        shiroFilterFactoryBean.setLoginUrl("/");
+        shiroFilterFactoryBean.setLoginUrl("/login");
         // 首页
         shiroFilterFactoryBean.setSuccessUrl("/index");
         // 错误页面，认证不通过跳转
