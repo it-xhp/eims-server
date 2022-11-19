@@ -1,15 +1,22 @@
 package com.gdupt.config;
 
+import com.gdupt.fillter.AuthcFilter;
+import com.gdupt.fillter.CommonFilter;
 import com.gdupt.shiro.JWTDefaultSubjectFactory;
 import com.gdupt.shiro.UserRealm;
 import org.apache.shiro.mgt.SubjectFactory;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author xuhuaping
@@ -18,6 +25,11 @@ import java.util.LinkedHashMap;
  */
 @Configuration
 public class ShiroConfig {
+
+    @Autowired
+    private AuthcFilter authcFilter;
+    @Autowired
+    private CommonFilter commonFilter;
 
 
     /**
@@ -59,7 +71,8 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier("defaultWebSecurityManager") DefaultWebSecurityManager securityManager){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        LinkedHashMap<String, String> filterRuleMap = new LinkedHashMap<>();
+        filterRuleMap.put("/user/delete","authcFilter");
         /**
          * anno 无需认证就可以访问
          * anthc 必须认证才能访问
@@ -74,8 +87,19 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSuccessUrl("/index");
         // 错误页面，认证不通过跳转
         shiroFilterFactoryBean.setUnauthorizedUrl("/error/noPermissionsPage");
-
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
+        Map<String, Filter> filters = new HashMap<>();
+        filters.put("commonFilter",commonFilter);
+        filters.put("authcFilter",authcFilter);
+        shiroFilterFactoryBean.setFilters(filters);
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterRuleMap);
         return shiroFilterFactoryBean;
+    }
+
+
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(@Qualifier("defaultWebSecurityManager") DefaultWebSecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
+        return authorizationAttributeSourceAdvisor;
     }
 }

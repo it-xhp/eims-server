@@ -49,7 +49,7 @@ public class AuthcFilter extends AccessControlFilter {
             String userId = claims.getSubject();
             UserToken userToken = new UserToken(userId, null);
             try {
-                SecurityUtils.getSubject().login(userToken);
+                getSubject(servletRequest,servletResponse).login(userToken);
             }catch (Exception e){
                 ApiResults apiResults = ApiResultUtils.getFail(ErrorCodeEnum.NO_AUTHORIZATION);
                 WebUtils.renderString((HttpServletResponse)servletResponse,apiResults);

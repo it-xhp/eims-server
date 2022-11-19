@@ -7,6 +7,7 @@ import com.gdupt.service.UserService;
 import com.gdupt.util.ApiResults;
 import com.gdupt.util.PageParam;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,7 @@ public class UserController extends BaseController{
         return userService.update(data,currentUser);
     }
 
+    @RequiresPermissions("user::delete")
     @RequestMapping("delete")
     public ApiResults deleteVue(@RequestParam("userId") Integer userId ) {
         User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
