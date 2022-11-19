@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author XHP
@@ -35,10 +34,9 @@ public class LoginService {
     /**
      * 登录
      * @param data
-     * @param session
      * @return
      */
-    public ApiResults login(JSONObject data,HttpSession session) {
+    public ApiResults login(JSONObject data) {
         User user = data.toBean(User.class);
         Integer isRemember = data.getInt("isRemember");
         String authenticationToken = "";
@@ -58,13 +56,12 @@ public class LoginService {
             }
             loginUser = (User) subject.getPrincipal();
             String userId = loginUser.getUserId().toString();
-            String sessionId = session.getId();
-            if (!MemoryData.getSessionIdMap().containsKey(userId)){
-                MemoryData.getSessionIdMap().put(userId,sessionId);
-            }else if (MemoryData.getSessionIdMap().containsKey(userId) && !sessionId.equals(MemoryData.getSessionIdMap().get(userId))) {
-                MemoryData.getSessionIdMap().remove(userId);
-                MemoryData.getSessionIdMap().put(userId, sessionId);
-            }
+            //if (!MemoryData.getSessionIdMap().containsKey(userId)){
+            //    MemoryData.getSessionIdMap().put(userId,sessionId);
+            //}else if (MemoryData.getSessionIdMap().containsKey(userId) && !sessionId.equals(MemoryData.getSessionIdMap().get(userId))) {
+            //    MemoryData.getSessionIdMap().remove(userId);
+            //    MemoryData.getSessionIdMap().put(userId, sessionId);
+            //}
             if (isRemember.equals(1)){
                 authenticationToken = JwtUtil.createJWT(userId);
                 redisUtil.setObject(RedisConstant.USER_PREFIX + userId,loginUser);

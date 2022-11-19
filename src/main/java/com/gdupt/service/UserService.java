@@ -53,7 +53,6 @@ public class UserService {
             return ApiResultUtils.getFail(ErrorCodeEnum.INVALID_PARAM, "userId不能为空,删除失败!");
         }
         Date date = new Date();
-        System.out.println(date);
         int delRow = userMapper.deleteById(user.getUserId(), date, userId);
         if (delRow>0){
             return ApiResultUtils.getSuccess("删除成功");

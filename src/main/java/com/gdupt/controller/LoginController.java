@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author XHP
@@ -24,8 +23,8 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping("login")
-    public ApiResults login(@RequestBody JSONObject data, HttpSession session){
-        return loginService.login(data,session);
+    public ApiResults login(@RequestBody JSONObject data){
+        return loginService.login(data);
     }
 
     @RequestMapping("logout")

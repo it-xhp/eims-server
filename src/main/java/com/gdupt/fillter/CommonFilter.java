@@ -1,7 +1,6 @@
 package com.gdupt.fillter;
 
 import org.apache.shiro.web.filter.authc.AnonymousFilter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.ServletRequest;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
  * @author xuhuaping
  * @date 2022/11/16
  */
-@Component
 @SuppressWarnings("Duplicates")
 public class CommonFilter extends AnonymousFilter {
     @Override

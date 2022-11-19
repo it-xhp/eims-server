@@ -4,8 +4,12 @@ import com.gdupt.fillter.AuthcFilter;
 import com.gdupt.fillter.CommonFilter;
 import com.gdupt.shiro.JWTDefaultSubjectFactory;
 import com.gdupt.shiro.UserRealm;
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SubjectFactory;
+import org.apache.shiro.session.mgt.DefaultSessionManager;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
@@ -34,11 +38,39 @@ public class ShiroConfig {
         return new JWTDefaultSubjectFactory();
     }
 
-    /**
-     * 创建自定义UserRealm
-     * @return
-     */
-    @Bean(name = "userRealm")
+    @Bean
+    public SessionManager sessionManager() {
+        DefaultSessionManager shiroSessionManager = new DefaultSessionManager();
+        // 关闭session校验轮询
+        shiroSessionManager.setSessionValidationSchedulerEnabled(false);
+        return shiroSessionManager;
+    }
+
+
+    @Bean
+    public DefaultSubjectDAO subjectDAO(DefaultSessionStorageEvaluator defaultSessionStorageEvaluator) {
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+        return subjectDAO;
+    }
+
+
+    @Bean
+    public DefaultSessionStorageEvaluator sessionStorageEvaluator() {
+        DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+        return sessionStorageEvaluator;
+    }
+
+
+
+
+        /**
+         * 创建自定义UserRealm
+         * @return
+         */
+    @Bean
     public UserRealm userRealm(){
         return new UserRealm();
     }
@@ -50,9 +82,12 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public SecurityManager securityManager(UserRealm userRealm){
+    public SecurityManager securityManager(UserRealm userRealm,SubjectFactory subjectFactory,SessionManager sessionManager,DefaultSubjectDAO subjectDAO){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setSubjectDAO(subjectDAO);
         securityManager.setRealm(userRealm);
+        securityManager.setSubjectFactory(subjectFactory);
+        securityManager.setSessionManager(sessionManager);
         return securityManager;
     }
 
@@ -68,8 +103,6 @@ public class ShiroConfig {
         Map<String, String> filterChainMap = new HashMap<>();
         filters.put("commonFilter",new CommonFilter());
         filters.put("authcFilter",new AuthcFilter());
-        filterChainMap.put("anon","commonFilter");
-        filterChainMap.put("anthc","authcFilter");
         filterChainMap.put("/login", "anon");
         filterChainMap.put("/**", "authcFilter");
         /**
