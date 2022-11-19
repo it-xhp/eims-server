@@ -1,7 +1,6 @@
 package com.gdupt.shiro;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.gdupt.constant.RedisConstant;
 import com.gdupt.entity.User;
 import com.gdupt.service.UserService;
@@ -61,14 +60,15 @@ public class UserRealm extends AuthorizingRealm {
             try {
                 claims = JwtUtil.parseJWT(jwt);
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new ExpiredCredentialsException ("登录已失效");
             }
             String userId = claims.getSubject();
-            String userString = redisUtil.get(RedisConstant.USER_PREFIX + userId);
-            authenticationUser = JSONUtil.toBean(userString, User.class);
-            if (Objects.isNull(authenticationUser)){
+            authenticationUser = redisUtil.getObject(RedisConstant.USER_PREFIX + userId);
+            if (authenticationUser == null){
                 throw new ExpiredCredentialsException ("登录已失效");
             }
+            token.setUser(authenticationUser);
         }else {
             authenticationUser = userService.getUserByUsername(user.getUserName());
             if (Objects.isNull(authenticationUser)){

@@ -4,12 +4,10 @@ import com.gdupt.fillter.AuthcFilter;
 import com.gdupt.fillter.CommonFilter;
 import com.gdupt.shiro.JWTDefaultSubjectFactory;
 import com.gdupt.shiro.UserRealm;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SubjectFactory;
-import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,10 +24,6 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
-    @Autowired
-    private AuthcFilter authcFilter;
-    @Autowired
-    private CommonFilter commonFilter;
 
 
     /**
@@ -51,12 +45,13 @@ public class ShiroConfig {
     }
 
 
+
     /**
      * 创建 SecurityManager 对象
      * @return
      */
-    @Bean(name = "defaultWebSecurityManager")
-    public DefaultWebSecurityManager securityManager(@Qualifier("userRealm") UserRealm userRealm){
+    @Bean
+    public SecurityManager securityManager(UserRealm userRealm){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(userRealm);
         return securityManager;
@@ -67,12 +62,19 @@ public class ShiroConfig {
      * @param securityManager
      * @return
      */
-    @Bean(name = "shiroFilterFactoryBean")
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier("defaultWebSecurityManager") DefaultWebSecurityManager securityManager){
+    @Bean
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        shiroFilterFactoryBean.setSecurityManager(securityManager);
         LinkedHashMap<String, String> filterRuleMap = new LinkedHashMap<>();
-        filterRuleMap.put("/user/delete","authcFilter");
+        // 注意：这里配置的 /login 是指到 @RequestMapping(value="/login")中的 /login
+        //shiroFilterFactoryBean.setLoginUrl("/login");
+        Map<String, Filter> filters = new HashMap<>();
+        Map<String, String> filterChainMap = new HashMap<>();
+        filters.put("commonFilter",new CommonFilter());
+        filters.put("authcFilter",new AuthcFilter());
+        filterRuleMap.put("/**","commonFilter");
+        filterRuleMap.put("/**","authcFilter");
+        //filterChainMap.put("/login", "anon");
         /**
          * anno 无需认证就可以访问
          * anthc 必须认证才能访问
@@ -80,26 +82,10 @@ public class ShiroConfig {
          * perms 拥有对某个资源的权限才能访问
          * roles 拥有某个角色权限才能访问
          */
-
-        // 注意：这里配置的 /login 是指到 @RequestMapping(value="/login")中的 /login
-        shiroFilterFactoryBean.setLoginUrl("/login");
-        // 首页
-        shiroFilterFactoryBean.setSuccessUrl("/index");
-        // 错误页面，认证不通过跳转
-        shiroFilterFactoryBean.setUnauthorizedUrl("/error/noPermissionsPage");
-        Map<String, Filter> filters = new HashMap<>();
-        filters.put("commonFilter",commonFilter);
-        filters.put("authcFilter",authcFilter);
         shiroFilterFactoryBean.setFilters(filters);
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterRuleMap);
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
+        //shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainMap);
         return shiroFilterFactoryBean;
-    }
-
-
-    @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(@Qualifier("defaultWebSecurityManager") DefaultWebSecurityManager securityManager) {
-        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
-        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
-        return authorizationAttributeSourceAdvisor;
     }
 }

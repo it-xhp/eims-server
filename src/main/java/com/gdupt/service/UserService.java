@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author xuhuaping
@@ -54,8 +53,12 @@ public class UserService {
             return ApiResultUtils.getFail(ErrorCodeEnum.INVALID_PARAM, "userId不能为空,删除失败!");
         }
         Date date = new Date();
-        userMapper.deleteById(user.getUserId(),date,userId);
-        return ApiResultUtils.getSuccess("删除成功");
+        System.out.println(date);
+        int delRow = userMapper.deleteById(user.getUserId(), date, userId);
+        if (delRow>0){
+            return ApiResultUtils.getSuccess("删除成功");
+        }
+        return ApiResultUtils.getFail(ErrorCodeEnum.DATA_NOT_FOUND,"删除失败");
     }
 
     /**
