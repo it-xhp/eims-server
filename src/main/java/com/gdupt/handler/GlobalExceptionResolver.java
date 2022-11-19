@@ -4,6 +4,7 @@ import com.gdupt.enums.ErrorCodeEnum;
 import com.gdupt.util.ApiResultUtils;
 import com.gdupt.util.ApiResults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionResolver {
+
+
+    @ExceptionHandler(AuthorizationException.class)
+    @ResponseBody
+    public ApiResults authorizationException(){
+        return ApiResultUtils.getFail(ErrorCodeEnum.CLIENT_NOT_AUTHORIZED,"未授权");
+    }
 
     @ExceptionHandler(Exception.class)
     @ResponseBody

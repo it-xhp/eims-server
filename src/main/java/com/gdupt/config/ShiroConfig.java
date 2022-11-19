@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -65,16 +64,14 @@ public class ShiroConfig {
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        LinkedHashMap<String, String> filterRuleMap = new LinkedHashMap<>();
-        // 注意：这里配置的 /login 是指到 @RequestMapping(value="/login")中的 /login
-        //shiroFilterFactoryBean.setLoginUrl("/login");
         Map<String, Filter> filters = new HashMap<>();
         Map<String, String> filterChainMap = new HashMap<>();
         filters.put("commonFilter",new CommonFilter());
         filters.put("authcFilter",new AuthcFilter());
-        filterRuleMap.put("/**","commonFilter");
-        filterRuleMap.put("/**","authcFilter");
-        //filterChainMap.put("/login", "anon");
+        filterChainMap.put("anon","commonFilter");
+        filterChainMap.put("anthc","authcFilter");
+        filterChainMap.put("/login", "anon");
+        filterChainMap.put("/**", "authcFilter");
         /**
          * anno 无需认证就可以访问
          * anthc 必须认证才能访问
@@ -83,9 +80,8 @@ public class ShiroConfig {
          * roles 拥有某个角色权限才能访问
          */
         shiroFilterFactoryBean.setFilters(filters);
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterRuleMap);
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-        //shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainMap);
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainMap);
         return shiroFilterFactoryBean;
     }
 }

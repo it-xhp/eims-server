@@ -51,7 +51,7 @@ public class AuthcFilter extends AccessControlFilter {
         HttpServletRequest request =((HttpServletRequest) servletRequest);
         HttpServletResponse response =((HttpServletResponse) servletResponse);
         String path = request.getServletPath();
-        if (ignoredPaths.contains(path)){return true;}
+        //if (ignoredPaths.contains(path)){return true;}
         log.info("[xhp] method:{} path: {}", new Object[]{request.getMethod(), path});
         String JWT = ((HttpServletRequest) servletRequest).getHeader("token");
         Subject subject = null;
