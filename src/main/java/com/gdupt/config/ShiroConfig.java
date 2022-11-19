@@ -57,10 +57,9 @@ public class ShiroConfig {
 
     @Bean
     public DefaultSessionStorageEvaluator sessionStorageEvaluator() {
-        DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultSessionStorageEvaluator();
         DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
         defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
-        return sessionStorageEvaluator;
+        return defaultSessionStorageEvaluator;
     }
 
 

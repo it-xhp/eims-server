@@ -49,11 +49,7 @@ public class LoginService {
         try {
             Subject subject = SecurityUtils.getSubject();
             UserToken token = new UserToken(null,user);
-            try {
-                subject.login(token);
-            }catch (Exception e){
-                return ApiResultUtils.getFail(ErrorCodeEnum.LOGIN_FAIL,e.getLocalizedMessage());
-            }
+            subject.login(token);
             loginUser = (User) subject.getPrincipal();
             String userId = loginUser.getUserId().toString();
             //if (!MemoryData.getSessionIdMap().containsKey(userId)){
@@ -67,6 +63,7 @@ public class LoginService {
                 redisUtil.setObject(RedisConstant.USER_PREFIX + userId,loginUser);
             }
         }catch (AuthenticationException e){
+            e.printStackTrace();
             return ApiResultUtils.getFail(ErrorCodeEnum.LOGIN_FAIL,e.toString());
         }
         data.set("username",loginUser.getUserName());
