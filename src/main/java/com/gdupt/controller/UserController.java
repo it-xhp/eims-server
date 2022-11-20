@@ -37,7 +37,7 @@ public class UserController extends BaseController{
 
     @RequiresPermissions("user::delete")
     @RequestMapping("delete")
-    public ApiResults deleteVue(@RequestParam("userId") Integer userId ) {
+    public ApiResults delete(@RequestParam("userId") Integer userId ) {
         User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
         return userService.delete(userId,currentUser);
     }
