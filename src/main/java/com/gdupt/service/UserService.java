@@ -4,6 +4,9 @@ package com.gdupt.service;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdupt.entity.User;
 import com.gdupt.enums.ErrorCodeEnum;
 import com.gdupt.mapper.UserMapper;
@@ -11,7 +14,6 @@ import com.gdupt.util.ApiResultUtils;
 import com.gdupt.util.ApiResults;
 import com.gdupt.util.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -35,11 +37,11 @@ public class UserService {
         updateUser.setUpdateUser(user.getUserId());
         Date date = new Date();
         updateUser.setUpdateTime(date);
-        User usersByUserName = getUserByUsername(updateUser.getUserName());
+        User usersByUserName = getUserByUsername(updateUser.getUsername());
         if (!updateUser.getUserId().equals(usersByUserName.getUserId())){
             return ApiResultUtils.getFail(ErrorCodeEnum.DUPLICATE_DATA,"用户名重复");
         }
-        userMapper.update(updateUser);
+        userMapper.updateById(updateUser);
         return ApiResultUtils.getSuccess("更新成功");
     }
 
@@ -52,8 +54,7 @@ public class UserService {
         if(userId == null){
             return ApiResultUtils.getFail(ErrorCodeEnum.INVALID_PARAM, "userId不能为空,删除失败!");
         }
-        Date date = new Date();
-        int delRow = userMapper.deleteById(user.getUserId(), date, userId);
+        int delRow = userMapper.deleteById(user.getUserId());
         if (delRow>0){
             return ApiResultUtils.getSuccess("删除成功");
         }
@@ -69,8 +70,12 @@ public class UserService {
         User user = pageParams.getParams().toBean(User.class);
         int posStart = pageParams.getPosStart();
         int count = pageParams.getCount();
-        PageRequest pageRequest = PageRequest.of(posStart, count);
-        List<User> users = userMapper.queryAllByLimit(user, pageRequest);
+        IPage<User> page = new Page<>();
+        page.setSize(count);
+        page.setCurrent(posStart);
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        IPage<User> userIPage = userMapper.selectPage(page, userLambdaQueryWrapper);
+        List<User> users = userIPage.getRecords();
         return ApiResultUtils.getSuccess(users);
     }
 
@@ -87,7 +92,7 @@ public class UserService {
         if (StrUtil.isBlank(newPassword)){
             return ApiResultUtils.getFail(ErrorCodeEnum.INVALID_PARAM,"请输入新密码");
         }
-        User user = userMapper.queryById(userId);
+        User user = userMapper.selectById(userId);
         if (user == null){
             return ApiResultUtils.getFail(ErrorCodeEnum.DATA_NOT_FOUND,"请检查该用户是否存在");
         }
@@ -102,7 +107,7 @@ public class UserService {
         updateUser.setUpdateTime(date);
         updateUser.setPassword(newPassword);
         updateUser.setUpdateUser(currentUser.getUserId());
-        userMapper.update(updateUser);
+        userMapper.updateById(updateUser);
         return ApiResultUtils.getSuccess("密码修改成功");
     }
 
@@ -114,7 +119,7 @@ public class UserService {
      */
     public ApiResults resetPassword(JSONObject data, User currentUser) {
         Integer userId = data.getInt("userId");
-        User user = userMapper.queryById(userId);
+        User user = userMapper.selectById(userId);
         if (user == null){
             return ApiResultUtils.getFail(ErrorCodeEnum.DATA_NOT_FOUND,"请检查该用户是否存在");
         }
@@ -125,7 +130,7 @@ public class UserService {
                 .updateTime(new Date())
                 .updateUser(currentUser.getUserId())
                 .build();
-        userMapper.update(updateUser);
+        userMapper.updateById(updateUser);
         return ApiResultUtils.getSuccess("重置密码成功");
     }
 
@@ -136,7 +141,7 @@ public class UserService {
      */
     public ApiResults add(JSONObject data) {
         User user = data.toBean(User.class);
-        String userName = user.getUserName();
+        String userName = user.getUsername();
         User usersByUserName = getUserByUsername(userName);
         if (usersByUserName != null){
             return ApiResultUtils.getFail(ErrorCodeEnum.DUPLICATE_DATA,"用户名重复");
@@ -152,7 +157,9 @@ public class UserService {
      * @return {@link User}
      */
     public User getUserByUsername(String username){
-        User user = userMapper.getUsersByUserName(username);
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userLambdaQueryWrapper.eq(User::getUsername,username);
+        User user = userMapper.selectOne(userLambdaQueryWrapper);
         return user;
     }
 }

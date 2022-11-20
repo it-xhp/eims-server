@@ -71,7 +71,7 @@ public class UserRealm extends AuthorizingRealm {
             }
             token.setUser(authenticationUser);
         }else {
-            authenticationUser = userService.getUserByUsername(user.getUserName());
+            authenticationUser = userService.getUserByUsername(user.getUsername());
             if (Objects.isNull(authenticationUser)){
                 throw new UnknownAccountException("该账号不存在");
             }else if (authenticationUser.getIsLocked().equals(1)){

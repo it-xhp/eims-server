@@ -40,7 +40,7 @@ public class LoginService {
         User user = data.toBean(User.class);
         Integer isRemember = data.getInt("isRemember");
         String authenticationToken = "";
-        if (StrUtil.isBlank(user.getUserName())){
+        if (StrUtil.isBlank(user.getUsername())){
             return ApiResultUtils.getFail(ErrorCodeEnum.INVALID_PARAM,"用户名不能为空");
         }else if (StrUtil.isBlank(user.getPassword())){
             return ApiResultUtils.getFail(ErrorCodeEnum.INVALID_PARAM,"密码不能为空");
@@ -66,7 +66,7 @@ public class LoginService {
             e.printStackTrace();
             return ApiResultUtils.getFail(ErrorCodeEnum.LOGIN_FAIL,e.toString());
         }
-        data.set("username",loginUser.getUserName());
+        data.set("username",loginUser.getUsername());
         data.set("token",authenticationToken);
         return ApiResultUtils.getSuccess("登录成功",data);
     }

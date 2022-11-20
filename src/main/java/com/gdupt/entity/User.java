@@ -1,5 +1,6 @@
 package com.gdupt.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 import java.util.Date;
@@ -13,9 +14,10 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("emis_users")
 public class User {
     private Integer userId;
-    private String userName;
+    private String username;
     private String password;
     private Integer gender;
     private Integer deptId;

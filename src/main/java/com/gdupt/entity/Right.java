@@ -1,8 +1,7 @@
 package com.gdupt.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
-
-import java.util.List;
 
 /**
  * @author xuhuaping
@@ -13,6 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("emis_right")
 public class Right {
     private Integer rightId;
     private Integer order;

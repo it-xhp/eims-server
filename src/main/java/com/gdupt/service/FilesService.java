@@ -2,6 +2,7 @@ package com.gdupt.service;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gdupt.entity.Files;
 import com.gdupt.mapper.FilesMapper;
 import com.gdupt.util.ApiResultUtils;
@@ -104,7 +105,7 @@ public class FilesService {
      * @return
      */
     public Files findOneById(Integer fileId){
-        return filesMapper.queryById(fileId);
+        return filesMapper.selectById(fileId);
     }
 
     /**
@@ -113,7 +114,7 @@ public class FilesService {
      * @return
      */
     public List<Files> findBatchByIds(List<Integer> fileIds){
-        return filesMapper.queryByIds(fileIds);
+        return filesMapper.selectBatchIds(fileIds);
     }
 
 
@@ -123,12 +124,17 @@ public class FilesService {
      * @return
      */
     public List<Files> findBatchById(Integer fileId){
-        return filesMapper.queryBatchById(fileId);
+        LambdaQueryWrapper<Files> filesLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        filesLambdaQueryWrapper.eq(Files::getFileId,fileId);
+        return filesMapper.selectList(filesLambdaQueryWrapper);
     }
 
 
     public List<Files> findOneByRelationTypeIdOrRelationTypeId(Integer relationTypeId, Integer relationId){
-        return filesMapper.findOneByRelationTypeIdOrRelationTypeId(relationTypeId,relationId);
+        LambdaQueryWrapper<Files> filesLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        filesLambdaQueryWrapper.eq(Files::getRelationId,relationId)
+                .eq(Files::getRelationTypeId,relationTypeId);
+        return filesMapper.selectList(filesLambdaQueryWrapper);
     }
 
 

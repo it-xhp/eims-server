@@ -1,5 +1,6 @@
 package com.gdupt.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("emis_dept")
 public class Dept {
     
     private Integer deptId;

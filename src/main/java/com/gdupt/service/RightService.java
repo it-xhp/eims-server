@@ -1,6 +1,7 @@
 package com.gdupt.service;
 
 import cn.hutool.core.lang.tree.Tree;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gdupt.entity.Right;
 import com.gdupt.entity.User;
 import com.gdupt.entity.UserRole;
@@ -36,9 +37,11 @@ public class RightService {
      */
     public ApiResults getAllRights(User currentUser) {
         Integer userId = currentUser.getUserId();
-        List<UserRole> userRoles = userRoleMapper.queryByUserId(userId);
+        LambdaQueryWrapper<UserRole> userRoleLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userRoleLambdaQueryWrapper.eq(UserRole::getUserId,userId);
+        List<UserRole> userRoles = userRoleMapper.selectList(userRoleLambdaQueryWrapper);
         List<Integer> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
-        List<Right> rights = rightMapper.queryByUserIds(roleIds);
+        List<Right> rights = rightMapper.selectBatchIds(roleIds);
         List<Tree<String>> trees = TreeUtils.buildTree(rights);
         return ApiResultUtils.getSuccess("",trees);
     }

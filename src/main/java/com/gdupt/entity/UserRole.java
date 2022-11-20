@@ -1,5 +1,6 @@
 package com.gdupt.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
@@ -11,6 +12,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("emis_user_role")
 public class UserRole {
     private Integer id;
     private Integer userId;

@@ -94,7 +94,7 @@ public class ActivitiService {
         holidayMap.put("name",user.getUserId().toString());
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINE_KEY,holidayMap);
         Task task =
-                taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(user.getUserName()).singleResult();
+                taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(user.getUsername()).singleResult();
         if (task != null){
             taskService.complete(task.getId());
         }
@@ -122,7 +122,7 @@ public class ActivitiService {
         //查询组任务
         List<Task> taskList = taskService.createTaskQuery()
                 .processDefinitionKey(PROCESS_DEFINE_KEY)
-                .taskCandidateUser(user.getUserName())
+                .taskCandidateUser(user.getUsername())
                 .list();
         return taskList;
     }
