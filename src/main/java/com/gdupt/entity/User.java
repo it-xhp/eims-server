@@ -34,6 +34,5 @@ public class User {
     private Date createTime;
     private Integer updateUser;
     private Date updateTime;
-    private Integer loginFailCount;
     private Date lastLoginTime;
 }

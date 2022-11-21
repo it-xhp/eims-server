@@ -21,7 +21,6 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateUser" column="update_user" jdbcType="INTEGER"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-        <result property="loginFailCount" column="login_fail_count" jdbcType="INTEGER"/>
         <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
