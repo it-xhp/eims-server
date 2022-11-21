@@ -104,6 +104,7 @@ public class ShiroConfig {
         filters.put("commonFilter",new CommonFilter());
         filters.put("authcFilter",new AuthcFilter());
         filterChainMap.put("/login", "anon");
+        filterChainMap.put("/uploads/**", "anon");
         filterChainMap.put("/**", "authcFilter");
         /**
          * anno 无需认证就可以访问
