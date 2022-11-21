@@ -7,4 +7,6 @@ package com.gdupt.constant;
 public class RedisConstant {
 
     public static final String USER_PREFIX = "user:";
+
+    public static final String LOGIN_COUNT = "loginCount:";
 }

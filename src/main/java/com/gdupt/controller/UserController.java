@@ -42,6 +42,11 @@ public class UserController extends BaseController{
         return userService.delete(userId,currentUser);
     }
 
+    @RequestMapping("updateLocked")
+    public ApiResults updateLocked(@RequestParam("userId") Integer lockedUserId){
+        return userService.updateLocked(lockedUserId);
+    }
+
 
     @RequestMapping("loadTable")
     public ApiResults loadTable(@RequestBody JSONObject data) {

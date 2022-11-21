@@ -7,12 +7,14 @@ import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gdupt.constant.RedisConstant;
 import com.gdupt.entity.User;
 import com.gdupt.enums.ErrorCodeEnum;
 import com.gdupt.mapper.UserMapper;
 import com.gdupt.util.ApiResultUtils;
 import com.gdupt.util.ApiResults;
 import com.gdupt.util.PageParam;
+import com.gdupt.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,9 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RedisUtil redisUtil;
     /**
      * 更新用户数据
      * @param data
@@ -161,5 +166,18 @@ public class UserService {
         userLambdaQueryWrapper.eq(User::getUsername,username);
         User user = userMapper.selectOne(userLambdaQueryWrapper);
         return user;
+    }
+
+    public ApiResults updateLocked(Integer lockedUserId) {
+        if (lockedUserId == null){
+            return ApiResultUtils.getFail(ErrorCodeEnum.INVALID_PARAM,"锁定用户id不得为空");
+        }
+        User user = User.builder()
+                .userId(lockedUserId)
+                .isLocked(0)
+                .build();
+        userMapper.updateById(user);
+        redisUtil.del(RedisConstant.LOGIN_COUNT+lockedUserId);
+        return ApiResultUtils.getSuccess("解除成功");
     }
 }

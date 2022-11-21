@@ -3,7 +3,9 @@ package com.gdupt.config;
 import com.gdupt.fillter.AuthcFilter;
 import com.gdupt.fillter.CommonFilter;
 import com.gdupt.shiro.JWTDefaultSubjectFactory;
+import com.gdupt.shiro.UserCredentialsMatcher;
 import com.gdupt.shiro.UserRealm;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
@@ -64,15 +66,23 @@ public class ShiroConfig {
     }
 
 
-
-
-        /**
-         * 创建自定义UserRealm
-         * @return
-         */
     @Bean
-    public UserRealm userRealm(){
-        return new UserRealm();
+    public CredentialsMatcher credentialsMatcher(){
+        return new UserCredentialsMatcher();
+    }
+
+
+
+
+    /**
+     * 创建自定义UserRealm
+     * @return
+     */
+    @Bean
+    public UserRealm userRealm(CredentialsMatcher credentialsMatcher){
+        UserRealm userRealm = new UserRealm();
+        userRealm.setCredentialsMatcher(credentialsMatcher);
+        return userRealm;
     }
 
 
